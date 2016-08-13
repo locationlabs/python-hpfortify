@@ -1,0 +1,6 @@
+enum34==1.1.6
+python-dateutil==2.4.2
+python-json-logger==0.1.4
+requests==2.11.0
+ujson==1.35
+voluptuous==0.9.3
