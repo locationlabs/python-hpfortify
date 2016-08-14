@@ -1,3 +1,4 @@
+from enum import Enum
 from json import dumps, loads
 
 
@@ -40,3 +41,11 @@ class ExpireAccessTokenResponse(object):
 
     def __str__(self):
         return "<ExpireAccessTokenResponse message: '{}''>".format(self.message)  # noqa
+
+
+class GrantType(Enum):
+    """
+    Enum class for Grant type
+    """
+    CLIENT_CREDENTIALS = "client_credentials"
+    PASSWORD = "password"
