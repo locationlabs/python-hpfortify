@@ -36,3 +36,7 @@ The below steps are for v1 api. Current version is v3.
          "Authorization: Bearer <ACCESS_TOKEN_FROM_FIRST_STEP>"
 
 # Steps to get Scan status
+
+
+# Assessment type id: 163 (mobile static scan)
+# Technology stack : Android 

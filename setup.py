@@ -26,7 +26,7 @@ setup(name='pfortify-client',
           'coverage',
           'nose_parameterized>=0.5.0',
       ],
-      test_suite='hpfortify_client.tests',
+      test_suite='hpfortify.tests',
       entry_points={
           'console_scripts': [
               # 'createdb = limekiln.cmd:createdb',

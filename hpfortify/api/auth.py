@@ -1,5 +1,5 @@
 from requests import post
-from hpfortify_client.model.auth import (
+from hpfortify.model.auth import (
     AuthResponse,
     ExpireAccessTokenResponse,
     GrantType,
