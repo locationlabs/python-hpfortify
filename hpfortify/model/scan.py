@@ -77,6 +77,20 @@ class PostStartScanResponse(object):
         return cls(scan_id=dct.get("scanId"))
 
 
+class PutImportScanResponse(object):
+
+    def __init__(self, reference_id=None):
+
+        self.reference_id = reference_id
+
+    def to_dict(self):
+        return dict(referenceId=self.reference_id)
+
+    @classmethod
+    def from_dict(cls, dct):
+        return cls(reference_id=dct.get("referenceId"))
+
+
 class Scan(object):
 
     def __init__(self,

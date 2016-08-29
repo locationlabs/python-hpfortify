@@ -73,7 +73,7 @@ class PostReleaseRequest(object):
                     releaseDescription=self.release_description,
                     copyState=self.copy_state,
                     copyStateReleaseId=self.copy_state_release_id,
-                    SdlcStatusType=self.sdlc_status_type,
+                    sdlcStatusType=self.sdlc_status_type,
                     )
 
     @classmethod
@@ -175,7 +175,7 @@ class Release(object):
                  mobile_scan_date=None,
                  dynamic_scan_date=None,
                  issue_count=None,
-                 isPassed=None,
+                 is_passed=None,
                  pass_fail_response_type_id=None,
                  pass_fail_response_type=None,
                  sdlc_status_type_id=None,
@@ -207,15 +207,42 @@ class Release(object):
         self.mobile_scan_date = mobile_scan_date
         self.dynamic_scan_date = dynamic_scan_date
         self.issue_count = issue_count
-        self.isPassed = isPassed
+        self.is_passed = is_passed
         self.pass_fail_response_type_id = pass_fail_response_type_id
         self.pass_fail_response_type = pass_fail_response_type
         self.sdlc_status_type_id = sdlc_status_type_id
         self.sdlc_status_type = sdlc_status_type
 
     def to_dict(self):
-        # TODO: need to implement this method
-        pass
+        return dict(releaseId=self.release_id,
+                    releaseName=self.release_name,
+                    releaseDescription=self.release_description,
+                    releaseCreatedDate=self.release_create_date,
+                    applicationId=self.application_id,
+                    applicationName=self.application_name,
+                    currentAnalysisStatusTypeId=self.current_analysis_status_type_id,  # noqa
+                    currentAnalysisStatusType=self.current_analysis_status_type,  # noqa
+                    rating=self.rating,
+                    critical=self.critical,
+                    high=self.high,
+                    medium=self.medium,
+                    low=self.low,
+                    currentStaticScanId=self.current_static_scan_id,
+                    currentDynamicScanId=self.current_dynamic_scan_id,
+                    currentMobileScanId=self.current_mobile_scan_id,
+                    staticAnalysisStatusType=self.static_analysis_status_type,
+                    dynamicAnalysisStatusType=self.dynamic_analysis_status_type,  # noqa
+                    mobileAnalysisStatusType=self.mobile_analysis_status_type,
+                    staticScanDate=self.static_scan_date,
+                    dynamicScanDate=self.dynamic_scan_date,
+                    mobileScanDate=self.mobile_scan_date,
+                    issueCount=self.issue_count,
+                    isPassed=self.is_passed,
+                    passFailReasonTypeId=self.pass_fail_response_type_id,
+                    passFailReasonType=self.pass_fail_response_type,
+                    sdlcStatusTypeId=self.sdlc_status_type_id,
+                    sdlcStatusType=self.sdlc_status_type,
+                    )
 
     @classmethod
     def from_dict(cls, dct):
@@ -233,7 +260,7 @@ class Release(object):
                    medium=dct.get("medium"),
                    low=dct.get("low"),
                    current_static_scan_id=dct.get("currentStaticScanId"),
-                   current_dynamic_scan_id=dct.get("currentStaticScanId"),
+                   current_dynamic_scan_id=dct.get("currentDynamicScanId"),
                    current_mobile_scan_id=dct.get("currentMobileScanId"),
                    static_analysis_status_type=dct.get("staticAnalysisStatusType"),  # noqa
                    dynamic_analysis_status_type=dct.get("dynamicAnalysisStatusType"),  # noqa
@@ -245,7 +272,7 @@ class Release(object):
                    mobile_scan_date=dct.get("dynamicScanDate"),
                    dynamic_scan_date=dct.get("mobileScanDate"),
                    issue_count=dct.get("issueCount"),
-                   isPassed=dct.get("isPassed"),
+                   is_passed=dct.get("isPassed"),
                    pass_fail_response_type_id=dct.get("passFailReasonTypeId"),
                    pass_fail_response_type=dct.get("passFailReasonType"),
                    sdlc_status_type_id=dct.get("sdlcStatusTypeId"),

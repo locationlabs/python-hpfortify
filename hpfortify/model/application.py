@@ -314,7 +314,7 @@ class PostApplicationRequest(object):
     def from_dict(cls, dct):
         return cls(application_name=dct.get("applicationName"),
                    application_description=dct.get("applicationDescription"),
-                   application_type=dct.get("applicationType"),
+                   application_type=ApplicationType(dct.get("applicationType")),  # noqa
                    release_name=dct.get("releaseName"),
                    release_description=dct.get("releaseDescription"),
                    email_list=dct.get("emailList"),
@@ -323,8 +323,8 @@ class PostApplicationRequest(object):
                         attribute,
                     )
                     for attribute in dct.get("attributes")] if dct.get("attributes") else None,  # noqa
-                   business_criticality_type=dct.get("businessCriticalityType"),  # noqa
-                   sdlc_status_type=dct.get("sdlcStatusType"),
+                   business_criticality_type=BusinessCriticalityType(dct.get("businessCriticalityType")),  # noqa
+                   sdlc_status_type=SdlcStatusType(dct.get("sdlcStatusType")),
                    )
 
 

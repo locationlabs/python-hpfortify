@@ -1,10 +1,11 @@
-from requests import get, post
-
+from requests import delete, get, post
 from hpfortify.model.release import (
     PostReleaseResponse,
     Release,
     ReleaseListResponse,
+    DeleteReleaseResponse,
 )
+
 from hpfortify.api.util import (
     get_authorization_header
 )
@@ -12,6 +13,22 @@ from hpfortify.api.util import (
 GET_RELEASES_URL = "/api/v3/releases"
 POST_RELEASE_URL = "/api/v3/releases"
 RELEASE_URL = "/api/v3/releases/{release_id}"
+DELETE_RELEASE_URL = "/api/v3/releases/{release_id}"
+
+
+def delete_release(base_url, access_token, release_id):
+    """
+    This method deletes the release.
+    :param base_url: Base url of HPfortify api
+    :param access_token: Access token which is necessary to access the api.
+    :param release_id: Release id
+    """
+    response = delete(base_url + DELETE_RELEASE_URL.format(release_id=release_id),  # noqa
+                      headers=get_authorization_header(access_token),
+                     )
+    response.raise_for_status()
+
+    return DeleteReleaseResponse.from_dict(response.json())
 
 
 def get_releases(base_url, access_token):
@@ -50,10 +67,16 @@ def post_release(base_url, access_token, release_request):
     :param base_url: Base url of HPfortify api.
     :param access_token: Access token which is necessary to access the api.
     :param release_request: PostReleaseRequest object.
-    :type release_request: hprofity_client.model.release.PostReleaseRequest
+    :type release_request: hprofity.model.release.PostReleaseRequest
     """
     response = post(base_url + POST_RELEASE_URL,
                     json=release_request.to_dict(),
                     headers=get_authorization_header(access_token))
-    response.raise_for_status
+
+    print release_request.to_dict()
+    print response.status_code, response.text
+    response.raise_for_status()
     return PostReleaseResponse.from_dict(response.json())
+
+
+# -------------- Utility methods -------------------

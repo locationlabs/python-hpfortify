@@ -40,3 +40,12 @@ The below steps are for v1 api. Current version is v3.
 
 # Assessment type id: 163 (mobile static scan)
 # Technology stack : Android 
+
+Here is the Mapping of CurrentAnalysisStatusTypeId & CurrentAnalysisStatusType
+
+|CurrentAnalysisStatusTypeId | CurrentAnalysisStatusType |
+| -------------------------- | ------------------------- |
+|0 | Not_started |
+|1 | Started (??)|
+|2 | Completed |
+|3 | Canceled |
