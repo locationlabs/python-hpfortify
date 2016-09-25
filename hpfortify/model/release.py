@@ -38,16 +38,6 @@ class DeleteReleaseResponse(SuccessAndErrorsResponse):
         super(self.__class__, self).__init__(success=success, errors=errors)
 
 
-class SdlcStatusType(Enum):
-    """
-    Software Development Life Cycle (SDLC) Status type.
-    """
-    PRODUCTION = "Production"
-    QA = "QA"
-    DEVELOPMENT = "Development"
-    RETIRED = "Retired"
-
-
 class PostReleaseRequest(object):
     """
     Model class to post release request
@@ -68,13 +58,16 @@ class PostReleaseRequest(object):
         self.sdlc_status_type = sdlc_status_type
 
     def to_dict(self):
-        return dict(applicationId=self.application_id,
-                    releaseName=self.release_name,
-                    releaseDescription=self.release_description,
-                    copyState=self.copy_state,
-                    copyStateReleaseId=self.copy_state_release_id,
-                    sdlcStatusType=self.sdlc_status_type,
-                    )
+        dct = dict(applicationId=self.application_id,
+                   releaseName=self.release_name,
+                   releaseDescription=self.release_description,
+                   copyState=self.copy_state,
+                   sdlcStatusType=self.sdlc_status_type,
+                   )
+        # They have a typo we need to pass trailing space after this key.
+        dct["copyStateReleaseId "] = self.copy_state_release_id
+
+        return dct
 
     @classmethod
     def from_dict(cls, dct):
@@ -82,7 +75,7 @@ class PostReleaseRequest(object):
                    release_name=dct.get("releaseName"),
                    release_description=dct.get("releaseDescription"),
                    copy_state=dct.get("copyState"),
-                   copy_state_release_id=dct.get("copyStateReleaseId"),
+                   copy_state_release_id=dct.get("copyStateReleaseId "),
                    sdlc_status_type=dct.get("sdlcStatusType"),
                    )
 

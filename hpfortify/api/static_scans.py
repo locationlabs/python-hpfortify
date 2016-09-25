@@ -25,7 +25,6 @@ def post_static_scans(base_url,
                       audit_preference_type=None,
                       ):
 
-    # TODO: Some error handling
     parameters = dict(assessmentTypeId=assessment_type_id,
                       technologyStack=technology_stack,
                       entitlementId=entitlement_id,
@@ -43,7 +42,6 @@ def post_static_scans(base_url,
 
         while True:
             file_fragment = file.read(MAX_FILE_FRAGMENT_SIZE)
-            import ipdb; ipdb.set_trace()
             if len(file_fragment) == MAX_FILE_FRAGMENT_SIZE:
                 parameters['offset'] = offset
                 parameters['fragNo'] = fragment_number
@@ -72,3 +70,6 @@ def post_static_scans(base_url,
             fragment_number = fragment_number + 1
         print "Total bytes sent: ", offset
         return PostStartScanResponse.from_dict(response.json())
+
+
+# -------------- Utility methods ------------------------

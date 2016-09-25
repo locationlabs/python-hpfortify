@@ -107,6 +107,35 @@ def is_application_id_exists(application_id, application_list):
     return False
 
 
+def get_application_by_name(base_url, access_token, application_name):
+    """
+    This method fetches the application based on the application name.
+    It returns Application object if it is successful. Otherwise it returns
+    None.
+
+    :param base_url: Base url of HPfority api.
+    :type base_url: string
+    :param access_token: Access token to make api call.
+    :type access_token: string
+    :param application_name: Application name to retrieve related Application.
+    :type application_name: string
+    """
+    try:
+        applications = get_applications(base_url, access_token)
+
+        if applications.total_count <= 0:
+            return None
+
+        for application in applications.items:
+
+            if application.application_name == application_name:
+                return application
+
+    except Exception as error:
+        print "Error: {}".format(error.strerror)
+        return None
+
+
 def get_release_by_application_and_release_name(base_url,
                                                 access_token,
                                                 application_id,
@@ -121,7 +150,7 @@ def get_release_by_application_and_release_name(base_url,
     :param access_token: Access token to make api call.
     :type access_token: string
     :param application_id: Application id to retrieve related releases.
-    :type application: integer
+    :type application_id: integer
     :param release_name: Release name which caller is looking for.
     :type release_name: string
     """

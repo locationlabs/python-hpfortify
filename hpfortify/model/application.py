@@ -3,6 +3,9 @@ from enum import Enum
 from hpfortify.model.common import (
     SuccessAndErrorsResponse
 )
+from hpfortify.model.utils import (
+    remove_none_value,
+)
 
 
 class Application(object):
@@ -19,8 +22,6 @@ class Application(object):
                  application_type,
                  attributes,
                  ):
-        """
-        """
         self.application_id = application_id
         self.application_name = application_name
         self.application_description = application_description
@@ -228,11 +229,11 @@ class DeleteApplicationResponse(SuccessAndErrorsResponse):
 class GetApplicationUsersResponse(object):
 
     def __init__(self, application_id=None, users=None):
-        self.applicaiton_id = application_id
+        self.application_id = application_id
         self.users = users
 
     def to_dict(self):
-        return dict(applicationId=self.applicaiton_id,
+        return dict(applicationId=self.application_id,
                     users=[item.to_dict() for item in self.users] if self.users else None,  # noqa
                     )
 
@@ -278,7 +279,7 @@ class PostApplicationRequest(object):
                  application_name=None,
                  application_description=None,
                  application_type=None,
-                 release_name=None,
+                 release_name=None,  # This is mandatory field.
                  release_description=None,
                  email_list=None,
                  owner_id=None,
@@ -298,17 +299,20 @@ class PostApplicationRequest(object):
         self.sdlc_status_type = sdlc_status_type
 
     def to_dict(self):
-        return dict(applicationName=self.application_name,
-                    applicationDescription=self.application_description,
-                    applicationType=self.application_type.value,
-                    releaseName=self.release_name,
-                    releaseDescription=self.release_description,
-                    emailList=self.email_list,
-                    ownerId=self.owner_id,
-                    attributes=[item.to_dict() for item in self.attributes] if self.attributes else None,  # noqa
-                    businessCriticalityType=self.business_criticality_type.value,  # noqa
-                    sdlcStatusType=self.sdlc_status_type.value,
-                    )
+        dct = dict(applicationName=self.application_name,
+                   applicationDescription=self.application_description,
+                   applicationType=self.application_type.value,
+                   releaseName=self.release_name,
+                   releaseDescription=self.release_description,
+                   emailList=self.email_list,
+                   ownerId=self.owner_id,
+                   attributes=[item.to_dict() for item in self.attributes] if self.attributes else None,  # noqa
+                   businessCriticalityType=self.business_criticality_type.value,  # noqa
+                   sdlcStatusType=self.sdlc_status_type.value,
+                   )
+        # HPfortify doesn't like the key whose value is None. so remove those
+        # entries before sending it to the server.
+        return remove_none_value(dct)
 
     @classmethod
     def from_dict(cls, dct):
@@ -340,7 +344,7 @@ class PostApplicationResponse(object):
 
     @classmethod
     def from_dict(cls, dct):
-        return cls(applicaiton_id=dct.get("application_id"),
+        return cls(application_id=dct.get("application_id"),
                    success=dct.get("success"),
                    errors=dct.get("errors"))
 

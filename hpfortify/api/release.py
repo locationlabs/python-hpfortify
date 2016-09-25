@@ -80,3 +80,14 @@ def post_release(base_url, access_token, release_request):
 
 
 # -------------- Utility methods -------------------
+
+
+def is_static_scan_present(base_url, access_token, release_id):
+    """
+    This methods determines whether there is already static scan present.
+    The result can be useful to determine whether next scan should be
+    remediation scan or not
+    """
+    release = get_release_by_id(base_url, access_token, release_id)
+
+    return not release or release.current_static_scan_id
