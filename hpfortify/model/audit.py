@@ -30,7 +30,7 @@ class GetAuditOptionsResponse(object):
 
     def to_dict(self):
         return dict(releaseId=self.release_id,
-                    auditAction=self.audit_action,
+                    auditProcessing=self.audit_processing,
                     canAudit=self.can_audit,
                     canChallenge=self.can_challenge,
                     canEdit=self.can_edit,
@@ -40,7 +40,7 @@ class GetAuditOptionsResponse(object):
     @classmethod
     def from_dict(cls, dct):
         return cls(release_id=dct.get("releaseId"),
-                   audit_action=dct.get("auditAction"),
+                   audit_processing=dct.get("auditProcessing"),
                    can_audit=dct.get("canAudit"),
                    can_challenge=dct.get("canChallenge"),
                    can_edit=dct.get("canEdit"),

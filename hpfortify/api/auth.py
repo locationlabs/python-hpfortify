@@ -1,11 +1,13 @@
-from requests import post
+from requests import codes
+from hpfortify.api.base import (
+    BaseClientApi
+)
 from hpfortify.model.auth import (
     AuthResponse,
     ExpireAccessTokenResponse,
     GrantType,
 )
 from util import (
-    get_authorization_header,
     SCOPE
 )
 
@@ -13,29 +15,31 @@ AUTH_URL = "/oauth/token"
 EXPIRE_ACCESS_TOKEN_URL = "/oauth/retireToken"
 
 
-def authorize(base_url, api_key, api_secret):
-    # Need a better way to send form data.
-    data = dict()
-    data["scope"] = SCOPE
-    data["grant_type"] = GrantType.CLIENT_CREDENTIALS.value
-    data["client_id"] = api_key
-    data["client_secret"] = api_secret
-    return authorize_internal(base_url, data)
+class AuthApi(BaseClientApi):
 
+    def __init__(self, **kwargs):
+        super(AuthApi, self).__init__(**kwargs)
 
-def authorize_internal(base_url, data):
-    response = post(base_url + AUTH_URL,
-                    data=data)
-    # Just make sure there is no error in the response
-    response.raise_for_status()
+    def authorize(self):
+        # Need a better way to send form data.
+        data = dict()
+        data["scope"] = SCOPE
+        data["grant_type"] = GrantType.CLIENT_CREDENTIALS.value
+        data["client_id"] = self.api_key
+        data["client_secret"] = self.api_secret
+        result = self.post_request(AUTH_URL,
+                                   data=data,
+                                   status_code_response_class_dict={codes.ok: AuthResponse})
 
-    return AuthResponse.from_json(response.text)
+        if type(result) is AuthResponse:
+            # if the result was successful then store the access token
+            self.access_token = result.access_token
+            # Need to set the default header again
+            self.set_default_header()
 
+        return result
 
-def expire_access_token(base_url, access_token):
-
-    response = post(base_url + EXPIRE_ACCESS_TOKEN_URL,
-                    headers=get_authorization_header(access_token))
-    # Just make sure there is no error in the response
-    response.raise_for_status()
-    return ExpireAccessTokenResponse.from_json(response.text)
+    def expire_access_token(self):
+        status_code_dict = {codes.ok: ExpireAccessTokenResponse}
+        return self.post_request(EXPIRE_ACCESS_TOKEN_URL,
+                                 status_code_response_class_dict=status_code_dict)

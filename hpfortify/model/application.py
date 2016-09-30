@@ -111,7 +111,7 @@ class ApplicationListResponse(object):
     @classmethod
     def from_dict(cls, dct):
         return cls(items=[Application.from_dict(item) for item in dct.get("items")],  # noqa
-                   total_count=dct.get("total_count"),
+                   total_count=dct.get("totalCount"),
                    )
 
 
@@ -206,6 +206,8 @@ class ApplicationUserPermissions(object):
                    start_static_scan=dct.get("startStaticScan"),
                    create_release=dct.get("createRelease"),
                    audit_issues=dct.get("auditIssues"),
+                   challenge_issues=dct.get("challengeIssues"),
+                   edit_issues=dct.get("editIssues"),
                    download_FPR=dct.get("downloadFPR"),
                    )
 
@@ -323,7 +325,7 @@ class PostApplicationRequest(object):
                    release_description=dct.get("releaseDescription"),
                    email_list=dct.get("emailList"),
                    owner_id=dct.get("ownerId"),
-                   attrirbutes=[ApplicationAttributeExtended.from_dict(
+                   attributes=[ApplicationAttributeExtended.from_dict(
                         attribute,
                     )
                     for attribute in dct.get("attributes")] if dct.get("attributes") else None,  # noqa
@@ -340,11 +342,13 @@ class PostApplicationResponse(object):
         self.errors = errors
 
     def to_dict(self):
-        return self.__dict__
+        return dict(applicationId=self.application_id,
+                    success=self.success,
+                    errors=self.errors)
 
     @classmethod
     def from_dict(cls, dct):
-        return cls(application_id=dct.get("application_id"),
+        return cls(application_id=dct.get("applicationId"),
                    success=dct.get("success"),
                    errors=dct.get("errors"))
 

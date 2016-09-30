@@ -1,5 +1,3 @@
-from enum import Enum
-
 from hpfortify.model.common import SuccessAndErrorsResponse
 
 
@@ -34,8 +32,8 @@ class CategoryRollupsResponse(object):
 
 class DeleteReleaseResponse(SuccessAndErrorsResponse):
 
-    def __init__(self, success=None, errors=None):
-        super(self.__class__, self).__init__(success=success, errors=errors)
+    def __init__(self, **kwargs):
+        super(DeleteReleaseResponse, self).__init__(**kwargs)
 
 
 class PostReleaseRequest(object):
@@ -80,16 +78,13 @@ class PostReleaseRequest(object):
                    )
 
 
-class PostReleaseResponse(object):
+class PostReleaseResponse(SuccessAndErrorsResponse):
 
     def __init__(self,
                  release_id=None,
-                 success=None,
-                 errors=None,
-                 ):
+                 **kwargs):
+        super(PostReleaseResponse, self).__init__(**kwargs)
         self.release_id = release_id
-        self.success = success
-        self.errors = errors
 
     def __str__(self):
         return "<PostReleaseResponse release_id: '{}', "\
@@ -114,29 +109,8 @@ class PostReleaseResponse(object):
 
 class PutReleaseResponse(SuccessAndErrorsResponse):
 
-    def __init__(self, success=None, errors=None):
-        super(self.__class__, self).__init__(success=success, errors=errors)
-
-
-class ReleaseListResponse(object):
-
-    def __init__(self,
-                 items=None,
-                 total_count=None,
-                 ):
-        self.items = items
-        self.total_count = total_count
-
-    def to_dict(self):
-        return dict(items=[item.to_dict() for item in self.items] if self.items else None,  # noqa
-                    totalCount=self.total_count,
-                    )
-
-    @classmethod
-    def from_dict(cls, dct):
-        return cls(items=[Release.from_dict(item) for item in dct.get("items")] if dct.get("items") else None,  # noqa
-                   total_count=dct.get("totalCount"),
-                   )
+    def __init__(self, **kwargs):
+        super(self.__class__, self).__init__(**kwargs)
 
 
 class Release(object):
@@ -194,7 +168,7 @@ class Release(object):
         self.dynamic_analysis_status_type = dynamic_analysis_status_type
         self.mobile_analysis_status_type = mobile_analysis_status_type
         self.static_analysis_status_type_id = static_analysis_status_type_id
-        self.dynamic_analysis_status_type_id = static_analysis_status_type_id
+        self.dynamic_analysis_status_type_id = dynamic_analysis_status_type_id
         self.mobile_analysis_status_type_id = mobile_analysis_status_type_id
         self.static_scan_date = static_scan_date
         self.mobile_scan_date = mobile_scan_date
@@ -224,8 +198,11 @@ class Release(object):
                     currentDynamicScanId=self.current_dynamic_scan_id,
                     currentMobileScanId=self.current_mobile_scan_id,
                     staticAnalysisStatusType=self.static_analysis_status_type,
-                    dynamicAnalysisStatusType=self.dynamic_analysis_status_type,  # noqa
+                    dynamicAnalysisStatusType=self.dynamic_analysis_status_type,
                     mobileAnalysisStatusType=self.mobile_analysis_status_type,
+                    staticAnalysisStatusTypeId=self.static_analysis_status_type_id,
+                    dynamicAnalysisStatusTypeId=self.dynamic_analysis_status_type_id,
+                    mobileAnalysisStatusTypeId=self.mobile_analysis_status_type_id,
                     staticScanDate=self.static_scan_date,
                     dynamicScanDate=self.dynamic_scan_date,
                     mobileScanDate=self.mobile_scan_date,
@@ -245,8 +222,8 @@ class Release(object):
                    release_create_date=dct.get("releaseCreatedDate"),
                    application_id=dct.get("applicationId"),
                    application_name=dct.get("applicationName"),
-                   current_analysis_status_type_id=dct.get("currentAnalysisStatusTypeId"),  # noqa
-                   current_analysis_status_type=dct.get("currentAnalysisStatusType"),  # noqa
+                   current_analysis_status_type_id=dct.get("currentAnalysisStatusTypeId"),
+                   current_analysis_status_type=dct.get("currentAnalysisStatusType"),
                    rating=dct.get("rating"),
                    critical=dct.get("critical"),
                    high=dct.get("high"),
@@ -255,19 +232,40 @@ class Release(object):
                    current_static_scan_id=dct.get("currentStaticScanId"),
                    current_dynamic_scan_id=dct.get("currentDynamicScanId"),
                    current_mobile_scan_id=dct.get("currentMobileScanId"),
-                   static_analysis_status_type=dct.get("staticAnalysisStatusType"),  # noqa
-                   dynamic_analysis_status_type=dct.get("dynamicAnalysisStatusType"),  # noqa
-                   mobile_analysis_status_type=dct.get("mobileAnalysisStatusType"),  # noqa
-                   static_analysis_status_type_id=dct.get("staticAnalysisStatusTypeId"),  # noqa
-                   dynamic_analysis_status_type_id=dct.get("dynamicAnalysisStatusTypeId"),  # noqa
-                   mobile_analysis_status_type_id=dct.get("mobileAnalysisStatusTypeId"),  # noqa
+                   static_analysis_status_type=dct.get("staticAnalysisStatusType"),
+                   dynamic_analysis_status_type=dct.get("dynamicAnalysisStatusType"),
+                   mobile_analysis_status_type=dct.get("mobileAnalysisStatusType"),
+                   static_analysis_status_type_id=dct.get("staticAnalysisStatusTypeId"),
+                   dynamic_analysis_status_type_id=dct.get("dynamicAnalysisStatusTypeId"),
+                   mobile_analysis_status_type_id=dct.get("mobileAnalysisStatusTypeId"),
                    static_scan_date=dct.get("staticScanDate"),
-                   mobile_scan_date=dct.get("dynamicScanDate"),
-                   dynamic_scan_date=dct.get("mobileScanDate"),
+                   mobile_scan_date=dct.get("mobileScanDate"),
+                   dynamic_scan_date=dct.get("dynamicScanDate"),
                    issue_count=dct.get("issueCount"),
                    is_passed=dct.get("isPassed"),
                    pass_fail_response_type_id=dct.get("passFailReasonTypeId"),
                    pass_fail_response_type=dct.get("passFailReasonType"),
                    sdlc_status_type_id=dct.get("sdlcStatusTypeId"),
                    sdlc_status_type=dct.get("sdlcStatusType"),
+                   )
+
+
+class ReleaseListResponse(object):
+
+    def __init__(self,
+                 items=None,
+                 total_count=None,
+                 ):
+        self.items = items
+        self.total_count = total_count
+
+    def to_dict(self):
+        return dict(items=[item.to_dict() for item in self.items] if self.items else None,  # noqa
+                    totalCount=self.total_count,
+                    )
+
+    @classmethod
+    def from_dict(cls, dct):
+        return cls(items=[Release.from_dict(item) for item in dct.get("items")] if dct.get("items") else None,  # noqa
+                   total_count=dct.get("totalCount"),
                    )

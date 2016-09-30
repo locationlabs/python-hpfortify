@@ -1,3 +1,9 @@
+from hpfortify.model.scan import (
+    EntitlementFrequencyType,
+    ScanType,
+)
+
+
 class ReleaseAssessmentType(object):
 
     def __init__(self,
@@ -30,10 +36,10 @@ class ReleaseAssessmentType(object):
     def to_dict(self):
         return dict(assessmentTypeId=self.assessment_type_id,
                     name=self.name,
-                    scanType=self.scan_type,
+                    scanType=self.scan_type.value,
                     scanTypeId=self.scan_type_id,
                     entitlementId=self.entitlement_id,
-                    frequencyType=self.frequency_type,
+                    frequencyType=self.frequency_type.value,
                     frequencyTypeId=self.frequency_type_id,
                     units=self.units,
                     unitsAvailable=self.units_available,
@@ -46,10 +52,10 @@ class ReleaseAssessmentType(object):
     def from_dict(cls, dct):
         return cls(assessment_type_id=dct.get("assessmentTypeId"),
                    name=dct.get("name"),
-                   scan_type=dct.get("scanType"),
+                   scan_type=ScanType(dct.get("scanType")),
                    scan_type_id=dct.get("scanTypeId"),
                    entitlement_id=dct.get("entitlementId"),
-                   frequency_type=dct.get("frequencyType"),
+                   frequency_type=EntitlementFrequencyType(dct.get("frequencyType")),
                    frequency_type_id=dct.get("frequencyTypeId"),
                    units=dct.get("units"),
                    units_available=dct.get("unitsAvailable"),

@@ -19,8 +19,7 @@ class GetTenantEntitlementResponse(object):
                     entitlementType=self.entitlement_type,
                     subscriptionTypeId=self.subscription_type_id,
                     subscriptionType=self.subscription_type,
-                    tenantEntitlements=[element.to_dict() for element in self.tenant_entitlements]  # noqa
-                                        if self.tenant_entitlements else None,
+                    tenantEntitlements=[element.to_dict() for element in self.tenant_entitlements] if self.tenant_entitlements else None,  # noqa
                     )
 
     @classmethod
@@ -29,9 +28,7 @@ class GetTenantEntitlementResponse(object):
                    entitlement_type=dct.get("entitlementType"),
                    subscription_type_id=dct.get("subscriptionTypeId"),
                    subscription_type=dct.get("subscriptionType"),
-                   tenant_entitlements=[TenantEntitlement.from_dict(element)
-                                        for element in dct.get("tenantEntitlements")]  # noqa
-                                        if dct.get("tenantEntitlements") else None,  # noqa
+                   tenant_entitlements=[TenantEntitlement.from_dict(element) for element in dct.get("tenantEntitlements")] if dct.get("tenantEntitlements") else None,  # noqa
                    )
 
 
@@ -58,8 +55,7 @@ class TenantEntitlement(object):
                     unitsConsumed=self.units_consumed,
                     startDate=self.start_date,
                     endDate=self.end_date,
-                    extendedProperties=[item.to_dict() for item in self.extended_properties]  # noqa
-                                        if self.extended_properties else None,
+                    extendedProperties=self.extended_properties.to_dict() if self.extended_properties else None,  # noqa
                     )
 
     @classmethod
@@ -69,9 +65,7 @@ class TenantEntitlement(object):
                    units_consumed=dct.get("unitsConsumed"),
                    start_date=dct.get("startDate"),
                    end_date=dct.get("endDate"),
-                   extended_properties=[TenantEntitlementExtendedProperties.from_dict(item)  # noqa
-                                        for item in dct.get("extendedProperties")]  # noqa
-                                        if dct.get("extendedProperties") else None,  # noqa
+                   extended_properties=TenantEntitlementExtendedProperties.from_dict(dct.get("extendedProperties")) if dct.get("extendedProperties") else None,  # noqa
                    )
 
 

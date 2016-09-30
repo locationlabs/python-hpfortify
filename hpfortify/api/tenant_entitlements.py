@@ -1,20 +1,21 @@
-from requests import get
+from requests import codes
 from hpfortify.model.tenant_entitlement import (  # noqa
     GetTenantEntitlementResponse,
 )
-from hpfortify.api.util import get_authorization_header
+from hpfortify.api.base import BaseClientApi
 
 TENANT_ENTITLEMENT_URL = "/api/v3/tenant-entitlements"
 
 
-def get_tenant_entitlements(base_url, access_token):
-    """
-    This method fetches all the entitlement associated with the account.
+class TenantEntitlementsApi(BaseClientApi):
 
-    :param base_url: Base url of HPfortify api.
-    :param access_token: Access token which is necessary to access the api.
-    """
-    response = get(base_url + TENANT_ENTITLEMENT_URL,
-                   headers=get_authorization_header(access_token))
-    response.raise_for_status()
-    return GetTenantEntitlementResponse.from_dict(response.json())
+    def __init__(self, **kwargs):
+        super(TenantEntitlementsApi, self).__init__(**kwargs)
+
+    def get_tenant_entitlements(self):
+        """
+        This method fetches all the entitlement associated with the account.
+        """
+        status_code_dict = {codes.ok: GetTenantEntitlementResponse}
+        return self.get_request(TENANT_ENTITLEMENT_URL,
+                                status_code_response_class_dict=status_code_dict)

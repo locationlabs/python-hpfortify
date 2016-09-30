@@ -36,8 +36,7 @@ class GetStaticScanOptionsResponse(object):
         self.items = items
 
     def to_dict(self):
-        return dict(items=[item.to_dict() for item in self.items] if self.items else None,  # noqa
-                    )
+        return dict(items=[item.to_dict() for item in self.items] if self.items else None)
 
     @classmethod
     def from_dict(cls, dct):
@@ -131,7 +130,7 @@ class Scan(object):
                     releaseId=self.release_id,
                     scanId=self.scan_id,
                     scanTypeId=self.scan_type_id,
-                    scanType=self.scan_type,
+                    scanType=self.scan_type.value,
                     assessmentTypeId=self.assessment_type_id,
                     analysisStatusTypeId=self.analysis_status_type_id,
                     analysisStatusType=self.analysis_status_type,
@@ -150,7 +149,7 @@ class Scan(object):
                    release_id=dct.get("releaseId"),
                    scan_id=dct.get("scanId"),
                    scan_type_id=dct.get("scanTypeId"),
-                   scan_type=dct.get("scanType"),
+                   scan_type=ScanType(dct.get("scanType")) if dct.get("scanType") else None,
                    assessment_type_id=dct.get("assessmentTypeId"),
                    analysis_status_type_id=dct.get("analysisStatusTypeId"),
                    analysis_status_type=dct.get("analysisStatusType"),
@@ -159,7 +158,7 @@ class Scan(object):
                    total_issues=dct.get("totalIssues"),
                    star_rating=dct.get("starRating"),
                    notes=dct.get("notes"),
-                   is_false_positive_challenge=dct.get("isFalsePositiveChallenge"),  # noqa
+                   is_false_positive_challenge=dct.get("isFalsePositiveChallenge"),
                    is_remediation_scan=dct.get("isRemediationScan"),
                    )
 
@@ -171,7 +170,7 @@ class ScanListResponse(object):
         self.total_count = total_count
 
     def to_dict(self):
-        return dict(items=[item.to_dict() for item in self.items] if self.items else None,  # noqa
+        return dict(items=[item.to_dict() for item in self.items] if self.items else None,
                     totalCount=self.total_count,
                     )
 
@@ -198,7 +197,7 @@ class ScanOption(object):
     def to_dict(self):
         return dict(id=self.id,
                     name=self.name,
-                    lastSelectedOption=self.last_selected_option,
+                    lastSelectedOption=self.last_selected_option.to_dict(),
                     options=[item.to_dict() for item in self.options] if self.options else None,  # noqa
                     )
 
@@ -206,8 +205,8 @@ class ScanOption(object):
     def from_dict(cls, dct):
         return cls(id=dct.get("id"),
                    name=dct.get("name"),
-                   last_selected_option=dct.get("lastSelectedOption"),
-                   options=[LookupItem.from_dict(item) for item in dct.get("optons")] if dct.get("options") else None,  # noqa
+                   last_selected_option=LookupItem.from_dict(dct.get("lastSelectedOption")) if dct.get("lastSelectedOption") else None,  # noqa
+                   options=[LookupItem.from_dict(item) for item in dct.get("options")] if dct.get("options") else None,  # noqa
                    )
 
 
@@ -217,6 +216,13 @@ class ScanPreferenceType(Enum):
     """
     STANDARD = "Standard"
     EXPRESS = "Express"
+
+
+class ScanType(Enum):
+    """
+    Enum class to represent the scan type.
+    """
+    STATIC = 'Static'
 
 
 class TechnologyStack(Enum):

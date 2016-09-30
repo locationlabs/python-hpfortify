@@ -1,40 +1,29 @@
-from requests import get
+from requests import codes
+
+from hpfortify.api.base import BaseClientApi
 from hpfortify.model.feature import TenantFeatureListResponse
 from hpfortify.model.tenant import GetTenantResponse
-from hpfortify.api.util import (
-    get_authorization_header
-)
 
 TENANTS_FEATURES_URL = "/api/v3/tenants/features"
 TENANTS_URL = "/api/v3/tenants"
 
 
-def get_tenants(base_url, access_token):
-    """
-    This method fetches the tenant information for the given access token.
+class TenantApi(BaseClientApi):
 
-    :param base_url: Base url of HPfortify api.
-    :type base_url: string
-    :param access_token: Access token which is required for making api call.
-    :type access_token: string
-    """
-    response = get(base_url + TENANTS_URL,
-                   headers=get_authorization_header(access_token))
+    def __init__(self, **kwargs):
+        super(TenantApi, self).__init__(**kwargs)
 
-    response.raise_for_status()
-    return GetTenantResponse.from_dict(response.json())
+    def get_tenants(self):
+        """
+        This method fetches the tenant information for the given access token.
+        """
+        status_code_dict = {codes.ok: GetTenantResponse}
+        return self.get_request(TENANTS_URL, status_code_response_class_dict=status_code_dict)
 
-
-def get_tenants_features(base_url, access_token):
-    """
-    This method fetches the tenant information for the given access token.
-
-    :param base_url: Base url of HPfortify api.
-    :type base_url: string
-    :param access_token: Access token which is required for making api call.
-    :type access_token: string
-    """
-    response = get(base_url + TENANTS_FEATURES_URL,
-                   headers=get_authorization_header(access_token))
-    response.raise_for_status()
-    return TenantFeatureListResponse.from_dict(response.json())
+    def get_tenants_features(self):
+        """
+        This method fetches the tenant information for the given access token.
+        """
+        status_code_dict = {codes.ok: TenantFeatureListResponse}
+        return self.get_request(TENANTS_FEATURES_URL,
+                                status_code_response_class_dict=status_code_dict)

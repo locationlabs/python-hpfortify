@@ -21,6 +21,19 @@ class AuthResponse(object):
         json_dict = loads(json_str)
         return cls(**json_dict)
 
+    def to_dict(self):
+        return dict(access_token=self.access_token,
+                    token_type=self.token_type,
+                    expires_in=self.expires_in,
+                    scope=self.scope)
+
+    @classmethod
+    def from_dict(cls, dct):
+        return cls(access_token=dct.get("access_token"),
+                   token_type=dct.get("token_type"),
+                   expires_in=dct.get("expires_in"),
+                   scope=dct.get("scope"))
+
     def __str__(self):
         return ("<AuthResponse access_token: '{access_token}' "
                 "token_type: '{token_type}' expires_in: '{expires_in}' "
@@ -38,6 +51,13 @@ class ExpireAccessTokenResponse(object):
     @classmethod
     def from_json(cls, json_str):
         return cls(**loads(json_str))
+
+    def to_dict(self):
+        return dict(message=self.message)
+
+    @classmethod
+    def from_dict(cls, dct):
+        return cls(message=dct.get("message"))
 
     def __str__(self):
         return "<ExpireAccessTokenResponse message: '{}''>".format(self.message)  # noqa
