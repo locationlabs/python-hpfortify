@@ -6,6 +6,10 @@ from hpfortify.model.application import (
     DeleteApplicationResponse,
     PostApplicationResponse
 )
+from hpfortify.model.common import (
+    ErrorResponse,
+    SuccessAndErrorsResponse,
+)
 from hpfortify.model.release import (
     ReleaseListResponse,
 )
@@ -25,14 +29,13 @@ class ApplicationApi(BaseClientApi):
         """
         This method deletes the application based on passed application id.
 
-        :param base_url: Base url of HPfority api.
-        :type base_url: string
-        :param access_token: Access token to make api call.
-        :type access_token: string
         :param application_id: Application id that will be deleted.
         :type application: integer
         """
-        status_code_dict = {codes.ok: DeleteApplicationResponse}
+        status_code_dict = {
+            codes.ok: DeleteApplicationResponse,
+            codes.bad_request: SuccessAndErrorsResponse,
+        }
         return self.delete_request(
             DELETE_APPLICAITON_URL.format(application_id=application_id),
             status_code_response_class_dict=status_code_dict,
@@ -42,7 +45,10 @@ class ApplicationApi(BaseClientApi):
         """
         This method fetches all application allowed for given access token.
         """
-        status_code_dict = {codes.ok: ApplicationListResponse}
+        status_code_dict = {
+            codes.ok: ApplicationListResponse,
+            codes.bad_request: ErrorResponse,
+        }
         return self.get_request(APPLICATION_URL,
                                 status_code_response_class_dict=status_code_dict,
                                 )
@@ -65,7 +71,11 @@ class ApplicationApi(BaseClientApi):
         :param application_request: Application request object.
         :type application_request: hpfortify.model.application.PostApplicationRequest  # noqa
         """
-        status_code_dict = {codes.created: PostApplicationResponse}
+        status_code_dict = {
+            codes.created: PostApplicationResponse,
+            codes.bad_request: ErrorResponse,
+            codes.unprocessable_entity: ErrorResponse,
+        }
         return self.post_request(POST_APPLICATION_URL,
                                  json=application_request.to_dict(),
                                  status_code_response_class_dict=status_code_dict,
@@ -89,8 +99,7 @@ class ApplicationApi(BaseClientApi):
 
         return False
 
-
-    def get_application_by_name(base_url, access_token, application_name):
+    def get_application_by_name(self, application_name):
         """
         This method fetches the application based on the application name.
         It returns Application object if it is successful. Otherwise it returns
@@ -104,7 +113,7 @@ class ApplicationApi(BaseClientApi):
         :type application_name: string
         """
         try:
-            applications = get_applications(base_url, access_token)
+            applications = self.get_applications()
 
             if applications.total_count <= 0:
                 return None
@@ -118,9 +127,7 @@ class ApplicationApi(BaseClientApi):
             print "Error: {}".format(error.strerror)
             return None
 
-
-    def get_release_by_application_and_release_name(base_url,
-                                                    access_token,
+    def get_release_by_application_and_release_name(self,
                                                     application_id,
                                                     release_name):
         """
@@ -128,18 +135,12 @@ class ApplicationApi(BaseClientApi):
         returns hpfortify.model.release.Release object if it successfully find it.
         Otherwise it returns None.
 
-        :param base_url: Base url of HPfority api.
-        :type base_url: string
-        :param access_token: Access token to make api call.
-        :type access_token: string
         :param application_id: Application id to retrieve related releases.
         :type application_id: integer
         :param release_name: Release name which caller is looking for.
         :type release_name: string
         """
-        releases = get_releases_by_application(base_url,
-                                               access_token,
-                                               application_id)
+        releases = self.get_releases_by_application(application_id)
         if not releases.items:
             return None
 
@@ -149,17 +150,14 @@ class ApplicationApi(BaseClientApi):
 
         return None
 
-
-    def get_latest_release_id(base_url, access_token, application_id):
+    def get_latest_release_id(self, application_id):
         """
         This method fetches the latest release id associated with the
         given application and satisfies following condition:
             1. The last scan is in Completed state.
         """
         release_id = -1
-        releases = get_releases_by_application(base_url,
-                                               access_token,
-                                               application_id)
+        releases = self.get_releases_by_application(application_id)
 
         if not releases.items:
             return release_id
@@ -171,23 +169,19 @@ class ApplicationApi(BaseClientApi):
 
         return release_id
 
-
-    def is_previous_release_present(base_url, access_token, application_id):
+    def is_previous_release_present(self, application_id):
         """
         This method checks if there is already release associated with given
         application id.
         """
-        releases = get_releases_by_application(base_url,
-                                               access_token,
-                                               application_id)
+        releases = self.get_releases_by_application(application_id)
 
         if releases.items and releases.total_count > 0:
             return True
         else:
             return False
 
-
-    def print_application_name_and_id_list(application_list):
+    def print_application_name_and_id_list(self, application_list):
         """
         This method prints the application name and id in a list.
 

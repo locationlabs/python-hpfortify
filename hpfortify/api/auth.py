@@ -7,12 +7,10 @@ from hpfortify.model.auth import (
     ExpireAccessTokenResponse,
     GrantType,
 )
-from util import (
-    SCOPE
-)
 
 AUTH_URL = "/oauth/token"
 EXPIRE_ACCESS_TOKEN_URL = "/oauth/retireToken"
+SCOPE = "https://hpfod.com/tenant"
 
 
 class AuthApi(BaseClientApi):

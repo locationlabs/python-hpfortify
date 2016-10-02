@@ -3,41 +3,33 @@ from click import (
     command,
     option,
 )
-from json import dumps
 from os import path
 from sys import exit
 
-from hpfortify.api.application import (
-    get_application_by_name,
-    get_release_by_application_and_release_name,
-)
-from hpfortify.api.auth import (
-    authorize,
-    expire_access_token,
-)
-from hpfortify.api.releae import (
-    is_static_scan_present,
-    post_release,
-)
-from hpfortify.api.static_scans import (
-    post_static_scans,
-)
-from hpfortify.api.util import (
-    BASE_URL_US,
-)
+from hpfortify.api.application import ApplicationApi
+from hpfortify.api.auth import AuthApi
+from hpfortify.api.releae import ReleaseApi
+from hpfortify.api.static_scans import StaticScanApi
 from hpfortify.model.application import (
     SdlcStatusType,
 )
+from hpfortify.model.common import (
+    ASSESSMENT_TYPE_ID,
+)
 from hpfortify.model.release import (
-    PostReleaseRequest
+    PostReleaseRequest,
+    PostReleaseResponse,
 )
 from hpfortify.model.scan import (
     TechnologyStack,
     EntitlementFrequencyType,
 )
-
-# Constants
-ASSESSMENT_TYPE_ID = 163  # Mobile static scan
+from hpfortify.model.static_scans import (
+    PostStartScanResponse,
+)
+from hpfortify.model.utils import (
+    print_response
+)
 
 
 class EnumParameterType(Choice):
@@ -138,66 +130,62 @@ def start_static_scan(api_key,
         print "File path is wrong: '{}'".format(file_path)
     is_authorized = False
     try:
+        auth_api = AuthApi(api_key=api_key, api_secret=api_secret)
         # Get the access token first
-        auth_response = authorize(BASE_URL_US, api_key, api_secret)
+        auth_response = auth_api.authorize()
         is_authorized = True
 
         # Fetch the application
-        application = fetch_app(BASE_URL_US,
-                                auth_response.access_token,
+        application = fetch_app(auth_response.access_token,
                                 app_name)
 
+        print_response(application, "Application response")
+        release_api = ReleaseApi(access_token=auth_response.access_token)
         # Get the current release
-        release = create_or_fetch_release(BASE_URL_US,
-                                          auth_response.access_token,
+        release = create_or_fetch_release(release_api,
                                           application.application_id,
                                           release_name,
                                           previous_release_name,
                                           sdlc_status,
                                           )
-
+        print_response(release, "Release response")
         # Look for scan if there is already scan existing then request for
-        is_remediation_scan = is_static_scan_present(BASE_URL_US,  # noqa
-                                                     auth_response.access_token,  # noqa
-                                                     release.release_id)
+        is_remediation_scan = release_api.is_static_scan_present(release.release_id)
+        print "is remediation scan: {}".format(is_remediation_scan)
         # remediation scan (Remediation scan is free). Otherwise start a
         # regular static scan.
-        scan_response = post_static_scans(BASE_URL_US,
-                                          auth_response.access_token,
-                                          file_path,
-                                          release.release_id,
-                                          ASSESSMENT_TYPE_ID,
-                                          technology_stack,
-                                          entitlement_id,
-                                          entitlement_frequency_type,
-                                          is_remediation_scan,
-                                          )
-
-        print dumps(scan_response.to_dict(),
-                    indent=3,
-                    sort_keys=True,
-                    )
+        static_scan_api = StaticScanApi(auth_response.access_token)
+        # scan_response = static_scan_api.post_static_scans(file_path,
+        #                                                   release.release_id,
+        #                                                   ASSESSMENT_TYPE_ID,
+        #                                                   technology_stack,
+        #                                                   entitlement_id,
+        #                                                   entitlement_frequency_type,
+        #                                                   is_remediation_scan,
+        #                                                   )
+        # if type(scan_response) is not PostStartScanResponse:
+        #     print "Couldn't start scan"
+        #     exit(-1)
+        # print_response(scan_response)
     finally:
         if is_authorized:
-            expire_access_token(BASE_URL_US, auth_response.access_token)
+            auth_api.expire_access_token()
 
 # ---------------- Utility methods --------------------
 
 
-def create_or_fetch_release(base_url,
-                            access_token,
+def create_or_fetch_release(release_api,
                             app_id,
                             release_name,
                             previous_release_name,
                             sdlc_status_type,
                             ):
+    app_api = ApplicationApi(access_token=release_api.access_token)
     copy_state = False
     # find the current release
-    current_release = get_release_by_application_and_release_name(base_url,
-                                                                  access_token,
-                                                                  app_id,
-                                                                  release_name,
-                                                                  )
+    current_release = app_api.get_release_by_application_and_release_name(app_id,
+                                                                          release_name,
+                                                                          )
     if current_release:
         return current_release
     else:
@@ -205,35 +193,31 @@ def create_or_fetch_release(base_url,
         if previous_release_name:
             # User wants to copy
             copy_state = True
-            previous_release = get_release_by_application_and_release_name(base_url,  # noqa
-                                                                           access_token,  # noqa
-                                                                           app_id,  # noqa
-                                                                           release_name,  # noqa
-                                                                           )
+            previous_release = app_api.get_release_by_application_and_release_name(app_id,
+                                                                                   release_name,
+                                                                                   )
             if not previous_release:
                 print "could not find the previous release: {}".format(
                     previous_release_name,
                 )
                 exit(-1)
 
-        create_release(base_url,
-                       access_token,
-                       app_id,
-                       release_name,
-                       copy_state,
-                       previous_release.release_id,
-                       sdlc_status_type,
-                       )
+        if not create_release(release_api,
+                              app_id,
+                              release_name,
+                              copy_state,
+                              previous_release.release_id,
+                              sdlc_status_type,
+                              ):
+            print "couldn't create release"
+            exit(-1)
         # Once release is created fetch the release and return.
-        return get_release_by_application_and_release_name(base_url,
-                                                           access_token,
-                                                           app_id,
-                                                           release_name,
-                                                           )
+        return app_api.get_release_by_application_and_release_name(app_id,
+                                                                   release_name,
+                                                                   )
 
 
-def create_release(base_url,
-                   access_token,
+def create_release(release_api,
                    app_id,
                    release_name,
                    copy_from_previous=False,
@@ -245,19 +229,22 @@ def create_release(base_url,
                                               release_description=None,
                                               copy_state=copy_from_previous,
                                               copy_state_release_id=previous_release_id if copy_from_previous else None,  # noqa
-                                              sdlc_status_type=sdlc_status_type,  # noqa
+                                              sdlc_status_type=sdlc_status_type,
                                               )
 
-    post_release(base_url,
-                 access_token,
-                 post_release_request)
+    post_release_response = release_api.post_release(post_release_request)
+
+    if type(post_release_response) is PostReleaseResponse:
+        return True
+    else:
+        return False
 
 
 def fetch_app(base_url, access_token, app_name):
-
-    application = get_application_by_name(base_url, access_token, app_name)
+    app_api = ApplicationApi(access_token=access_token)
+    application = app_api.get_application_by_name(app_name)
     if not application:
-        print "could not find application: {}\n Please check app name.".format(app_name)  # noqa
+        print "could not find application: {}\n Please check app name.".format(app_name)
         exit(-1)
     else:
         return application

@@ -39,7 +39,8 @@ POST_RELEASE_REQUEST_DICT = {
     "releaseName": "10.0.1",
     "releaseDescription": "Test release",
     "copyState": True,
-    "copyStateReleaseId ": 10345,  # They have a typo we need to pass trailing space after this key.
+    # They have a typo we need to pass trailing space after this key.
+    "copyStateReleaseId ": 10345,
     "sdlcStatusType": SdlcStatusType.PRODUCTION.value,
 }
 

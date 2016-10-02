@@ -172,7 +172,9 @@ def test_get_auto_report_response():
 
 
 def test_post_application_request():
-    assert_from_and_to_dict(PostApplicationRequest, POST_APPLICATION_REQUEST_DICT, remove_none=True)
+    assert_from_and_to_dict(PostApplicationRequest,
+                            POST_APPLICATION_REQUEST_DICT,
+                            remove_none=True)
 
 
 def test_post_application_response():

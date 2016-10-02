@@ -1,6 +1,7 @@
 from requests import codes
 
 from hpfortify.api.base import BaseClientApi
+from hpfortify.model.common import ErrorResponse
 from hpfortify.model.release import (
     PostReleaseResponse,
     Release,
@@ -59,7 +60,11 @@ class ReleaseApi(BaseClientApi):
         :param release_request: PostReleaseRequest object.
         :type release_request: hprofity.model.release.PostReleaseRequest
         """
-        status_code_dict = {codes.created: PostReleaseResponse}
+        status_code_dict = {
+            codes.created: PostReleaseResponse,
+            codes.bad_request: ErrorResponse,
+            codes.unprocessable_entity: ErrorResponse,
+        }
         return self.post_request(POST_RELEASE_URL,
                                  json=release_request.to_dict(),
                                  status_code_response_class_dict=status_code_dict,
@@ -75,4 +80,4 @@ class ReleaseApi(BaseClientApi):
         """
         release = self.get_release_by_id(release_id)
 
-        return not release or release.current_static_scan_id
+        return (not release) and release.current_static_scan_id

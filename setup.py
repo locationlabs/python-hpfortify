@@ -29,7 +29,7 @@ setup(name='pfortify-client',
       test_suite='hpfortify.tests',
       entry_points={
           'console_scripts': [
-              # 'createdb = limekiln.cmd:createdb',
+              'start-static-scan = hpfortify.cmd.client:start_static_scan',
           ],
       },
       )

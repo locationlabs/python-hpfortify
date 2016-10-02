@@ -1,6 +1,7 @@
 from requests import codes
 
 from hpfortify.api.base import BaseClientApi
+from hpfortify.model.common import ErrorResponse
 from hpfortify.model.scan import PostStartScanResponse
 
 POST_STATIC_SCAN_URL = "/api/v3/releases/{release_id}/static-scans/start-scan"
@@ -48,20 +49,25 @@ class StaticScanApi(BaseClientApi):
                     parameters['offset'] = offset
                     parameters['fragNo'] = fragment_number
                     offset = offset + len(file_fragment)
-                    response = self.post_request(POST_STATIC_SCAN_URL.format(release_id=release_id),
+                    response = self.post_request(POST_STATIC_SCAN_URL.format(release_id=release_id),  # noqa
                                                  data=file_fragment,
                                                  params=parameters,
                                                  )
-                    print response.status_code, response.text
+                    print response
                 else:
                     # This is last file fragment
                     fragment_number = -1
                     parameters['offset'] = offset
                     parameters['fragNo'] = fragment_number
                     offset = offset + len(file_fragment)
-                    status_code_dict = {codes.created: PostStartScanResponse}
+                    status_code_dict = {
+                        codes.ok: PostStartScanResponse,
+                        codes.bad_request: ErrorResponse,
+                        codes.unprocessable_entity: ErrorResponse,
+                        codes.internal_server_error: ErrorResponse,
+                    }
 
-                    response = self.post_request(POST_STATIC_SCAN_URL.format(release_id=release_id),
+                    response = self.post_request(POST_STATIC_SCAN_URL.format(release_id=release_id),  # noqa
                                                  data=file_fragment,
                                                  params=parameters,
                                                  status_code_response_class_dict=status_code_dict)

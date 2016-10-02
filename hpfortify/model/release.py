@@ -1,4 +1,6 @@
+from hpfortify.model.application import SdlcStatusType
 from hpfortify.model.common import SuccessAndErrorsResponse
+from hpfortify.model.utils import remove_none_value
 
 
 class CategoryCount(object):
@@ -60,12 +62,12 @@ class PostReleaseRequest(object):
                    releaseName=self.release_name,
                    releaseDescription=self.release_description,
                    copyState=self.copy_state,
-                   sdlcStatusType=self.sdlc_status_type,
+                   sdlcStatusType=self.sdlc_status_type.value,
                    )
-        # They have a typo we need to pass trailing space after this key.
+        # XXX HPfortify has a typo we need to pass trailing space for this key.
         dct["copyStateReleaseId "] = self.copy_state_release_id
 
-        return dct
+        return remove_none_value(dct)
 
     @classmethod
     def from_dict(cls, dct):
@@ -74,7 +76,7 @@ class PostReleaseRequest(object):
                    release_description=dct.get("releaseDescription"),
                    copy_state=dct.get("copyState"),
                    copy_state_release_id=dct.get("copyStateReleaseId "),
-                   sdlc_status_type=dct.get("sdlcStatusType"),
+                   sdlc_status_type=SdlcStatusType(dct.get("sdlcStatusType")),
                    )
 
 

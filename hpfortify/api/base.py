@@ -4,10 +4,10 @@ from requests import (
     delete,
     get,
     post,
+    put,
 )
-from hpfortify.api.util import (
-    BASE_URL_US,
-)
+
+BASE_URL_US = "https://api.hpfod.com"
 
 
 class BaseClientApi(object):
@@ -59,13 +59,14 @@ class BaseClientApi(object):
             """ If status_code_response_class_map is not provided then use the default method
             provided requests.Response object.
             """
-            response.riase_for_status()
+            response.raise_for_status()
             return response
 
         response_cls = status_code_response_class_dict.get(response.status_code)
 
         if not response_cls:
             response.raise_for_status()
+            return response
 
         return response_cls.from_dict(response.json())
 
@@ -78,7 +79,6 @@ class BaseClientApi(object):
         """
         final_header = dict()
         final_header.update(self.default_headers)
-
         if additional_header:
             final_header.update(additional_header)
         response = delete(self.base_url + api_path,
@@ -116,5 +116,22 @@ class BaseClientApi(object):
                         data=data,
                         params=params,
                         headers=final_header)
+        return self.riase_for_status(response,
+                                     status_code_response_class_dict=status_code_response_class_dict)  # noqa
+
+    def put_request(self,
+                    api_path,
+                    json=None,
+                    params=None,
+                    additional_header=None,
+                    status_code_response_class_dict=None):
+        final_header = dict()
+        final_header.update(self.default_headers)
+        if additional_header:
+            final_header.update(additional_header)
+        response = put(self.base_url + api_path,
+                       json=json,
+                       params=params,
+                       headers=final_header)
         return self.riase_for_status(response,
                                      status_code_response_class_dict=status_code_response_class_dict)  # noqa

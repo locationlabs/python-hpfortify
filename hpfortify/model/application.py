@@ -156,7 +156,7 @@ class ApplicationUserListResponse(object):
         self.total_count = total_count
 
     def to_dict(self):
-        return dict(items=[item.to_dict() for item in self.items] if self.items else None,  # noqa
+        return dict(items=[item.to_dict() for item in self.items] if self.items else None,
                     totalCount=self.total_count,
                     )
 
