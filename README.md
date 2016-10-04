@@ -6,7 +6,7 @@ There are basically three steps to use the APIs.
 
 1. Initiate the AuthApi and call authorize() method. 
 
-  ```
+  ```python
   auth_api = AuthApi(api_key=api_key,
                      api_secret=api_secret)
   auth_response = auth_api.authorize()                   
@@ -14,7 +14,7 @@ There are basically three steps to use the APIs.
   
 2. Get the access token from the response and use it to initialize other API.
 
-  ```
+  ```python
   tenant_api = TenantApi(access_token=auth_response.access_token)
   entitlements = tenant_api.get_tenant_entitlements()
   print entitlements
@@ -22,13 +22,13 @@ There are basically three steps to use the APIs.
   
 3. Once you are done then expire the access token for clean way of shutting it down.
 
-  ```
+  ```python
   auth_api.expire_access_token()
   ```
   
 ### Hello world!
 Here is a simple script which uses the exposed method. You can use it as a reference.
-  ```
+  ```python
   from json import dumps
   from hpfortify.api.application import ApplicationApi
   from hpfortify.api.tenants import TenantApi
@@ -72,7 +72,7 @@ Here is a simple script which uses the exposed method. You can use it as a refer
   
 ## Command Line Tool
 This library also comes with a command line tool for initiating the static code analysis. You can automate the process of initating the code scan by hooking up with the build system. So your build system can run this command to initiate the code scan. Here is an example command:
-  ```
+  ```sh
   start-static-scan --api-key "<API_KEY>" --api-secret "<API_SECRET> --app-name "<APP_NAME>" --release-name "<RELEASE_NAME>" --sdlc-status QA --technology-stack ANDROID --entitlement-id <ENTITLEMENT_ID> --entitlement-frequency-type SUBSCRIPTION --file-path <FULLY_QUALIFIED_FILE_PATH>
   
   # Example
@@ -81,7 +81,7 @@ This library also comes with a command line tool for initiating the static code 
   
 ## Install
 This project is not yet published to the Pypi, but it will be available soon. You can install the ap by cloning the project and running the following command in the root directory of the project.
-  ```
+  ```sh
   pip install -U -e .
   ``` 
   
