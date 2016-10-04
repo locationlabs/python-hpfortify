@@ -1,5 +1,11 @@
 # Python client for HPfortify v3 api.
+[![Build Status](https://travis-ci.org/locationlabs/python-hpfortify.svg)](https://travis-ci.org/locationlabs/python-hpfortify.svg)
+
 This client exposes different methods which can be hooked up to your application to directly interact with the HPfortify. This can also be used to automated to process to initiate a scan.
+
+## Supported python versions
+
+ - Python 2.7
 
 ## Steps
 There are basically three steps to use the APIs.
