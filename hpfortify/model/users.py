@@ -48,6 +48,19 @@ class PostUserRequest(object):
                    )
 
 
+class PostUserResponse(object):
+
+    def __init__(self, user_id=None):
+        self.user_id = user_id
+
+    def to_dict(self):
+        return dict(userId=self.user_id)
+
+    @classmethod
+    def from_dict(cls, dct):
+        return cls(user_id=dct.get("userId"))
+
+
 class PutUserRequest(object):
 
     def __init__(self,
@@ -95,19 +108,6 @@ class PutUserRequest(object):
                    must_change=dct.get("mustChange"),
                    password=dct.get("password"),
                    )
-
-
-class PostUserResponse(object):
-
-    def __init__(self, user_id=None):
-        self.user_id = user_id
-
-    def to_dict(self):
-        return dict(userid=self.user_id)
-
-    @classmethod
-    def from_dict(cls, dct):
-        return cls(user_id=dct.get("userId"))
 
 
 class User(object):

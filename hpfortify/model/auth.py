@@ -1,5 +1,4 @@
 from enum import Enum
-from json import dumps, loads
 
 
 class AuthResponse(object):
@@ -12,14 +11,6 @@ class AuthResponse(object):
         self.token_type = token_type
         self.expires_in = expires_in
         self.scope = scope
-
-    def to_json(self):
-        return dumps(self.__dict__)
-
-    @classmethod
-    def from_json(cls, json_str):
-        json_dict = loads(json_str)
-        return cls(**json_dict)
 
     def to_dict(self):
         return dict(access_token=self.access_token,
@@ -45,13 +36,6 @@ class ExpireAccessTokenResponse(object):
     def __init__(self, message):
         self.message = message
 
-    def to_json(self):
-        return dumps(self.__dict__)
-
-    @classmethod
-    def from_json(cls, json_str):
-        return cls(**loads(json_str))
-
     def to_dict(self):
         return dict(message=self.message)
 
@@ -60,7 +44,7 @@ class ExpireAccessTokenResponse(object):
         return cls(message=dct.get("message"))
 
     def __str__(self):
-        return "<ExpireAccessTokenResponse message: '{}''>".format(self.message)  # noqa
+        return "<ExpireAccessTokenResponse message: '{}''>".format(self.message)
 
 
 class GrantType(Enum):
