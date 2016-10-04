@@ -2,8 +2,8 @@ language: python
 python:
 - '2.7'
 - '3.4'
-install: pip install . --use-mirrors
-script: python setup.py nosetests
+install: pip install tox-travis
+script: tox
 deploy:
   provider: pypi
   user: github-ll
