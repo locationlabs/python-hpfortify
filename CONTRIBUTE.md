@@ -25,14 +25,14 @@ We use `nosetest` to write unit test case. You can check `hpfortify/tests` direc
 
 You can run the unit test cases by executing the following command in the project root directory.
 
-    ```sh
+```sh
     python setup.py nosetests
-    ```
+```
 
 ### Code Style Guide
 
 We closely follow `pep8` code style guide. We have configured `tox` to check the code style and also run the unit test. You can use the following command to run the tox. You can run this command in the project root directory.
 
-    ```sh
-    tox
-    ```
+```sh
+tox
+```
