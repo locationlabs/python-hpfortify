@@ -76,7 +76,7 @@ This library also comes with a command line tool for initiating the static code 
   start-static-scan --api-key "<API_KEY>" --api-secret "<API_SECRET> --app-name "<APP_NAME>" --release-name "<RELEASE_NAME>" --sdlc-status QA --technology-stack ANDROID --entitlement-id <ENTITLEMENT_ID> --entitlement-frequency-type SUBSCRIPTION --file-path <FULLY_QUALIFIED_FILE_PATH>
   
   # Example
-  start-static-scan --api-key "abadeet-7a3d-465c-ad18-e9a02484ae00" --api-secret '889daab34abdead' --app-name 'Android test app' --release-name '1.0' --sdlc-status QA --technology-stack ANDROID --entitlement-id 12345 --entitlement-frequency-type SUBSCRIPTION --file-path /Users/wavemarket/locationlabs/afm-10.0.1-v2-src.zip
+  start-static-scan --api-key "abadeet-7a3d-465c-ad18-e9a02484ae00" --api-secret '889daab34abdead' --app-name 'Android test app' --release-name '1.0' --sdlc-status QA --technology-stack ANDROID --entitlement-id 12345 --entitlement-frequency-type SUBSCRIPTION --file-path /Users/foo/bar-10.0.1-src.zip
   ```
   
 ## Install
