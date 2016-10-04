@@ -53,7 +53,7 @@ class StaticScanApi(BaseClientApi):
                                                  data=file_fragment,
                                                  params=parameters,
                                                  )
-                    print response
+                    print(response)
                 else:
                     # This is last file fragment
                     fragment_number = -1
@@ -72,7 +72,7 @@ class StaticScanApi(BaseClientApi):
                                                  params=parameters,
                                                  status_code_response_class_dict=status_code_dict)
 
-                    print "Total bytes sent: ", offset
+                    print("Total bytes sent: {}".format(offset))
                     return response
 
                 # Calculate parameters for next iteration

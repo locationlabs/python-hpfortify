@@ -16,6 +16,6 @@ def print_response(response, message=None):
     This method prints the response model object in pretty format.
     """
     if message:
-        print message
+        print(message)
 
-    print dumps(response.to_dict(), indent=3, sort_keys=True)
+    print(dumps(response.to_dict(), indent=3, sort_keys=True))

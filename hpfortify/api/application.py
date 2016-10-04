@@ -124,7 +124,7 @@ class ApplicationApi(BaseClientApi):
                     return application
 
         except Exception as error:
-            print "Error: {}".format(error.strerror)
+            print("Error: {}".format(error.strerror))
             return None
 
     def get_release_by_application_and_release_name(self,
@@ -190,8 +190,8 @@ class ApplicationApi(BaseClientApi):
         :type application_list: hpfortify.model.application.ApplicationListResponse
         """
         if not application_list:
-            print "Application list is empty"
+            print("Application list is empty")
             return
 
         for item in application_list.items:
-            print "{} => {}".format(item.application_id, item.application_name)
+            print("{} => {}".format(item.application_id, item.application_name))

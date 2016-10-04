@@ -147,7 +147,7 @@ def start_static_scan(api_key,
         print_response(release, "Release response")
         # Look for scan if there is already scan existing then request for
         is_remediation_scan = release_api.is_static_scan_present(release.release_id)
-        print "is remediation scan: {}".format(is_remediation_scan)
+        print("is remediation scan: {}".format(is_remediation_scan))
         # remediation scan (Remediation scan is free). Otherwise start a
         # regular static scan.
         static_scan_api = StaticScanApi(access_token=auth_response.access_token)
@@ -160,7 +160,7 @@ def start_static_scan(api_key,
                                                           is_remediation_scan=is_remediation_scan,
                                                           )
         if type(scan_response) is not PostStartScanResponse:
-            print "Couldn't start scan"
+            print("Couldn't start scan")
             exit(-1)
         print_response(scan_response)
     finally:
@@ -193,9 +193,7 @@ def create_or_fetch_release(release_api,
                                                                                    release_name,
                                                                                    )
             if not previous_release:
-                print "could not find the previous release: {}".format(
-                    previous_release_name,
-                )
+                print("could not find the previous release: {}".format(previous_release_name))
                 exit(-1)
 
         if not create_release(release_api,
@@ -205,7 +203,7 @@ def create_or_fetch_release(release_api,
                               previous_release.release_id,
                               sdlc_status_type,
                               ):
-            print "couldn't create release"
+            print("couldn't create release")
             exit(-1)
         # Once release is created fetch the release and return.
         return app_api.get_release_by_application_and_release_name(app_id,
@@ -240,7 +238,7 @@ def fetch_app(access_token, app_name):
     app_api = ApplicationApi(access_token=access_token)
     application = app_api.get_application_by_name(app_name)
     if not application:
-        print "could not find application: {}\n Please check app name.".format(app_name)
+        print("could not find application: {}\n Please check app name.".format(app_name))
         exit(-1)
     else:
         return application
