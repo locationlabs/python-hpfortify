@@ -1,0 +1,14 @@
+language: python
+python:
+- '2.7'
+- '3.4'
+install: pip install . --use-mirrors
+script: python setup.py nosetests
+deploy:
+  provider: pypi
+  user: github-ll
+  password:
+    secure: WZNNslmr6ELiasA6IhO9QDQ/g7758WjezVLqC3Ebo3EgAsUOFeCvtqODf3U8czz4UxORrVL7xWN/lUEOCG/ImDoXa9W27h8kl3D0pP9s8FDNngZspB5c3xhZhQesiqB6n8Fyi2dLic9QYUUIgquo2w+w/r5rRHvplI9OVbIGuVM=
+  on:
+    tags: true
+    repo: locationlabs/python-hpfortify
