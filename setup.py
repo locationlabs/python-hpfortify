@@ -6,12 +6,12 @@ __version__ = '0.1'
 
 __build__ = ''
 
-setup(name='pfortify-client',
+setup(name='hpfortify',
       version=__version__ + __build__,
       description='Python HPfority api client',
-      author='rakesh.kumar',
-      author_email='rakeshcusat@gmail.com',
-      url='http://www.code4reference.com',
+      author='Location Labs',
+      author_email='info@locationlabs.com',
+      url='http://www.locationlabs.com',
       packages=find_packages(exclude=['*.tests']),
       setup_requires=[
           'nose>=1.0'
@@ -22,9 +22,7 @@ setup(name='pfortify-client',
       ],
       tests_require=[
           'mock==1.0.1',
-          'mockredispy>=2.9.0.11',
           'coverage',
-          'nose_parameterized>=0.5.0',
       ],
       test_suite='hpfortify.tests',
       entry_points={

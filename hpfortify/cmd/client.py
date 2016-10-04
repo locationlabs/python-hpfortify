@@ -2,13 +2,13 @@ from click import (
     Choice,
     command,
     option,
+    Path,
 )
-from os import path
 from sys import exit
 
 from hpfortify.api.application import ApplicationApi
 from hpfortify.api.auth import AuthApi
-from hpfortify.api.releae import ReleaseApi
+from hpfortify.api.release import ReleaseApi
 from hpfortify.api.static_scans import StaticScanApi
 from hpfortify.model.application import (
     SdlcStatusType,
@@ -24,7 +24,7 @@ from hpfortify.model.scan import (
     TechnologyStack,
     EntitlementFrequencyType,
 )
-from hpfortify.model.static_scans import (
+from hpfortify.model.scan import (
     PostStartScanResponse,
 )
 from hpfortify.model.utils import (
@@ -83,7 +83,7 @@ class EnumParameterType(Choice):
 )
 @option(
     "--file-path",
-    type=str,
+    type=Path(exists=True),
     required=True,
     help="Zipped source code file path"
 )
@@ -125,16 +125,12 @@ def start_static_scan(api_key,
     """
     This method starts the scan.
     """
-    # Validate the data input parameters
-    if not file_path or not path.isfile(file_path):
-        print "File path is wrong: '{}'".format(file_path)
     is_authorized = False
     try:
-        auth_api = AuthApi(api_key=api_key, api_secret=api_secret)
+        auth_api = AuthApi(api_key=api_key.encode('utf8'), api_secret=api_secret.encode('utf8'))
         # Get the access token first
         auth_response = auth_api.authorize()
         is_authorized = True
-
         # Fetch the application
         application = fetch_app(auth_response.access_token,
                                 app_name)
@@ -154,19 +150,19 @@ def start_static_scan(api_key,
         print "is remediation scan: {}".format(is_remediation_scan)
         # remediation scan (Remediation scan is free). Otherwise start a
         # regular static scan.
-        static_scan_api = StaticScanApi(auth_response.access_token)
-        # scan_response = static_scan_api.post_static_scans(file_path,
-        #                                                   release.release_id,
-        #                                                   ASSESSMENT_TYPE_ID,
-        #                                                   technology_stack,
-        #                                                   entitlement_id,
-        #                                                   entitlement_frequency_type,
-        #                                                   is_remediation_scan,
-        #                                                   )
-        # if type(scan_response) is not PostStartScanResponse:
-        #     print "Couldn't start scan"
-        #     exit(-1)
-        # print_response(scan_response)
+        static_scan_api = StaticScanApi(access_token=auth_response.access_token)
+        scan_response = static_scan_api.post_static_scans(file_path,
+                                                          release.release_id,
+                                                          ASSESSMENT_TYPE_ID,
+                                                          technology_stack.value,
+                                                          entitlement_id,
+                                                          entitlement_frequency_type.value,
+                                                          is_remediation_scan=is_remediation_scan,
+                                                          )
+        if type(scan_response) is not PostStartScanResponse:
+            print "Couldn't start scan"
+            exit(-1)
+        print_response(scan_response)
     finally:
         if is_authorized:
             auth_api.expire_access_token()
@@ -240,7 +236,7 @@ def create_release(release_api,
         return False
 
 
-def fetch_app(base_url, access_token, app_name):
+def fetch_app(access_token, app_name):
     app_api = ApplicationApi(access_token=access_token)
     application = app_api.get_application_by_name(app_name)
     if not application:
