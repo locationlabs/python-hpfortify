@@ -13,13 +13,13 @@ We expect you to adhere to the following rubric. This will increase the chance t
   * If you have fixed any issue then write a test case to make sure that your fix is working. It also increases the code coverage and avoid us doing the same mistake in future.
 * Be consistent with the coding style. We closely follow the `pep8` coding standard. Run the `tox` command to make sure your changes have not violated any of the `pep8` rules.
 * Make commits of logical units.
-  * Write quality commit message by providing enough context and information.  
+  * Write quality commit message by providing enough context and information.
 * Avoid unnecessary whitespace. Check for unnecessary whitespace with `git diff --check` before committing.
 
 
 ## Unit Test Case
 
-We use `nosetest` to write unit test case. You can check `hpfortify/tests` directory for reference. 
+We use `nosetest` to write unit test case. You can check `hpfortify/tests` directory for reference.
 
 ### Run Unit Test Case
 
