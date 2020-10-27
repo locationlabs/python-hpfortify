@@ -4,7 +4,7 @@ backports.shutil-get-terminal-size==1.0.0
 cffi==1.7.0
 click==5.1
 clint==0.5.1
-cryptography==1.4
+cryptography==3.2
 decorator==4.0.10
 enum34==1.1.6
 idna==2.1
