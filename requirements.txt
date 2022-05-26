@@ -32,7 +32,7 @@ six==1.10.0
 tabulate==0.7.5
 traitlets==4.2.2
 twine==1.8.1
-ujson==1.35
+ujson==5.2.0
 urllib3==1.16
 voluptuous==0.9.3
 wcwidth==0.1.7
